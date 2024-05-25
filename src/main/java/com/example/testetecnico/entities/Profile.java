@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
+@Table(name = "profile")
 @Getter
 @Setter
 public class Profile {
@@ -19,10 +20,10 @@ public class Profile {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @OneToMany(mappedBy = "profile")
-    private List<Movie> planToWatch;
-
-    @OneToMany(mappedBy = "profile")
-    private List<Movie> watchedList;
+//    @OneToMany(mappedBy = "id")
+//    private List<Movie> planToWatch;
+//
+//    @OneToMany(mappedBy = "id")
+//    private List<Movie> watchedList;
 
 }

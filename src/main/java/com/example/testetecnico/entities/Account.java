@@ -1,8 +1,9 @@
 package com.example.testetecnico.entities;
 
-import com.example.testetecnico.dto.AccountDTO;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
@@ -13,6 +14,8 @@ import java.util.Objects;
 @Table(name="account")
 @Getter
 @Setter
+@NoArgsConstructor
+@EqualsAndHashCode(of="id")
 public class Account {
 
     @Id
@@ -27,23 +30,9 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Profile> profiles;
 
-    public Account(AccountDTO dto) {
-        BeanUtils.copyProperties(dto,this);
-    }
+//    public Account(AccountDTO dto) {
+//        BeanUtils.copyProperties(dto,this);
+//    }
 
-    public Account() {
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return Objects.equals(id, account.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
