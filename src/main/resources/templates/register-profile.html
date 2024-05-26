@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registrar Perfil</title>
+</head>
+<body>
+<h1>Registrar Perfil</h1>
+<form th:action="@{'/account/' + ${accountId} + '/register-profile'}" method="post">
+    <label for="profileName">Nome do perfil:</label>
+    <input type="text" id="profileName" name="profileName" />
+    <button type="submit">Criar perfil</button>
+</form>
+</body>
+</html>

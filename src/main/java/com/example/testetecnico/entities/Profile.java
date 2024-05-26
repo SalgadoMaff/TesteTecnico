@@ -17,13 +17,12 @@ public class Profile {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
     private Account account;
 
-//    @OneToMany(mappedBy = "id")
+//    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
 //    private List<Movie> planToWatch;
 //
-//    @OneToMany(mappedBy = "id")
+//    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
 //    private List<Movie> watchedList;
 
 }

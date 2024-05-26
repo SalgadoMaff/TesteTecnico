@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Perfis</title>
+</head>
+<body>
+<h1>Perfis</h1>
+<div th:if="${!account.getProfiles().isEmpty()}">
+    <!-- Mostrar a lista de perfis -->
+    <ul>
+        <li th:each="profile : ${account.getProfiles()}" th:text="${profile.name}">
+            <!-- Link para entrar no perfil -->
+            <a th:href="@{'/account/' + ${account.getId()} + '/profile/' + ${profile.getId()}}">Enter</a>
+        </li>
+    </ul>
+</div>
+<div th:unless="${!account.getProfiles().isEmpty()}">
+    <p>Não há perfis registrados.</p>
+</div>
+<a th:href="@{'/account/' + ${account.getId()} + '/register-profile'}">Registre novo perfil</a> <!-- Link para a página de registro de perfil -->
+</body>
+</html>
