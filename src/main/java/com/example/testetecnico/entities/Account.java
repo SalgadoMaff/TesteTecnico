@@ -5,10 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
+import java.sql.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name="account")
@@ -27,12 +26,11 @@ public class Account {
 
     private String password;
 
-    @OneToMany(mappedBy = "account")
+    private String name;
+
+
+    private Date birthDate;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Profile> profiles;
-
-//    public Account(AccountDTO dto) {
-//        BeanUtils.copyProperties(dto,this);
-//    }
-
-
 }
