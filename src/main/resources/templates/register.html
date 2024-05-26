@@ -30,7 +30,8 @@
             font-weight: bold;
         }
         .register-container input[type="text"],
-        .register-container input[type="password"] {
+        .register-container input[type="password"],
+        .register-container input[type="date"] {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -65,16 +66,20 @@
 </head>
 <body>
 <div class="register-container">
-    <h1>Register</h1>
-    <form th:action="@{/register}" th:object="${account}" method="post">
+    <h1>Registro</h1>
+    <form th:action="@{/register}" th:object="${user}" method="post">
         <label for="username">Email:</label>
         <input type="text" id="username" th:field="*{email}" required>
-        <label for="password">Password:</label>
+        <label for="password">Senha:</label>
         <input type="password" id="password" th:field="*{password}" required>
+        <label for="name">Nome:</label>
+        <input type="text" id="name" th:field="*{name}" required>
+        <label for="birthDate">Data de nascimento:</label>
+        <input type="date" id="birthDate" th:field="*{birthDate}" required>
         <button type="submit">Register</button>
     </form>
     <div class="login-link">
-        <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+        <p>Já tem uma conta? <a th:href="@{/login}">Faça Login</a></p>
     </div>
 </div>
 </body>
