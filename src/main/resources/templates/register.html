@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Register</title>
     <style>
@@ -62,14 +62,20 @@
         .register-container .login-link a:hover {
             text-decoration: underline;
         }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div class="register-container">
     <h1>Registro</h1>
-    <form th:action="@{/register}" th:object="${user}" method="post">
+    <form th:action="@{/register}" th:object="${user}" method="post" onsubmit="return validateEmail()">
         <label for="username">Email:</label>
         <input type="text" id="username" th:field="*{email}" required>
+        <span id="email-error" class="error-message">Por favor, insira um e-mail válido.</span>
         <label for="password">Senha:</label>
         <input type="password" id="password" th:field="*{password}" required>
         <label for="name">Nome:</label>
@@ -79,8 +85,24 @@
         <button type="submit">Register</button>
     </form>
     <div class="login-link">
-        <p>Já tem uma conta?<a th:href="@{/login}">Faça Login</a></p>
+        <p>Já tem uma conta? <a th:href="@{/login}">Faça Login</a></p>
     </div>
 </div>
+
+<script>
+    function validateEmail() {
+        const emailField = document.getElementById('username');
+        const emailError = document.getElementById('email-error');
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailPattern.test(emailField.value)) {
+            emailError.style.display = 'block';
+            return false;
+        } else {
+            emailError.style.display = 'none';
+            return true;
+        }
+    }
+</script>
 </body>
 </html>
