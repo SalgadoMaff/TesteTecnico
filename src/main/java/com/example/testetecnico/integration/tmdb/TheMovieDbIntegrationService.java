@@ -21,7 +21,7 @@ public class TheMovieDbIntegrationService {
     private RestTemplate restTemplate;
 
     public MoviePageDto searchMovies(String query, Integer page) {
-        String url = baseUrl + "/search/movie";
+        String url =  baseUrl + "/search/movie";
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam("query", query)
                 .queryParam("page", page)

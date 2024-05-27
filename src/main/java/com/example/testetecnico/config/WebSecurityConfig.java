@@ -1,4 +1,4 @@
-package com.example.testetecnico.security;
+package com.example.testetecnico.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,8 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
-@EnableMethodSecurity
-@EnableWebSecurity
 public class WebSecurityConfig {
 
     @Autowired
@@ -34,21 +30,22 @@ public class WebSecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->{
-                    authorizeRequests.requestMatchers("/register", "/login", "/resources/**").permitAll()
-                            .anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/register", "/login").permitAll()
+                                .anyRequest().authenticated()
+                )
                 .formLogin(httpSecurityFormLoginConfigurer ->
                         httpSecurityFormLoginConfigurer.loginPage("/login")
                                 .successHandler(authenticationSuccessHandler())
                                 .permitAll())
                 .logout(logout -> logout.permitAll())
-                .authenticationProvider(authenticationProvider()); // Ensure the AuthenticationProvider is set
+                .authenticationProvider(authenticationProvider());
         return http.build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -58,7 +55,7 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            response.sendRedirect("/account");
+            response.sendRedirect("/profiles");
         };
     }
 }
