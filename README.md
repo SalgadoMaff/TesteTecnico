@@ -51,7 +51,7 @@ Você também precisará fazer a seguinte configuração (siga o caminho abaixo)
 
 ```bash
 # Clone este repositório
-$ git clone https://github.com/SalgadoMaff/TesteTecnico
+$ [git clone https://github.com/SalgadoMaff/TesteTecnico]
 ```
 - Abra o [IntelliJ IDEA Community Edition](https://www.jetbrains.com/pt-br/idea/download/#section=windows) que você instalou e depois abra o projeto;
 - Localize na parte direita superior lateral uma aba chamada "Maven" e a abra;
