@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Filmes para ver</title>
+</head>
+<body>
+<h1>Lista de Filmes para ver</h1>
+<p><a th:href="@{/profile/{profileId}/movies(profileId=${profileId})}">Voltar</a></p>
+<table>
+    <tr>
+        <th>Titulo</th>
+        <th>Descrição</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="movie : ${movies}">
+        <td th:text="${movie.title}"></td>
+        <td th:text="${movie.overview}"></td>
+
+    </tr>
+    </tbody>
+</table>
