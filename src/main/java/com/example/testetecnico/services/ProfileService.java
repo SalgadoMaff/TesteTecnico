@@ -1,8 +1,12 @@
 package com.example.testetecnico.services;
 
-import com.example.testetecnico.entities.Account;
-import com.example.testetecnico.entities.Profile;
+import com.example.testetecnico.dto.MovieDto;
+import com.example.testetecnico.entities.*;
+import com.example.testetecnico.integration.tmdb.TheMovieDbIntegrationService;
+import com.example.testetecnico.repositories.MovieRepository;
+import com.example.testetecnico.repositories.PlanToWatchRepository;
 import com.example.testetecnico.repositories.ProfileRepository;
+import com.example.testetecnico.repositories.WatchedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,26 +17,37 @@ public class ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
 
-    public boolean canAddProfile(Account account){
-        return account.getProfiles().size()<4;
+    @Autowired
+    private PlanToWatchRepository planToWatchRepository;
+    @Autowired
+    private WatchedRepository watchedRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private TheMovieDbIntegrationService theMovieDbIntegrationService;
+
+
+    public boolean canAddProfile(Account account) {
+        return account.getProfiles().size() < 4;
     }
 
-    public boolean noProfiles(Account account){
+    public boolean noProfiles(Account account) {
         return account.getProfiles().isEmpty();
     }
 
 
-
-    public Profile addProfile(Account account, Profile profile){
-        if (canAddProfile(account)){
-            if(noProfiles((account))){
+    public Profile addProfile(Account account, Profile profile) {
+        if (canAddProfile(account)) {
+            if (noProfiles((account))) {
                 profile.setAccount(account);
                 return profileRepository.save(profile);
-            }else{
+            } else {
                 for (int i = 0; i < account.getProfiles().size(); i++) {
-                    if(account.getProfiles().get(i).getName().equals(profile.getName())){
+                    if (account.getProfiles().get(i).getName().equals(profile.getName())) {
                         break;
-                    }else if(i==account.getProfiles().size()-1){
+                    } else if (i == account.getProfiles().size() - 1) {
                         profile.setAccount(account);
                         return profileRepository.save(profile);
                     }
@@ -42,10 +57,76 @@ public class ProfileService {
         return null;
     }
 
-    public Optional<Profile> listProfilesByAccount(Account account){
-        return profileRepository.findByAccount(account);
+    public PlanToWatch addMovieToPlanToWatch(Long profileId, Long movieId) {
+
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        if (profile.isEmpty()) {
+            return null;
+        }
+        Optional<Movie> movie = movieRepository.findById(movieId);
+        if (movie.isEmpty()) {
+            MovieDto movieDto = theMovieDbIntegrationService.getMovieById(movieId);
+            movieRepository.save(movieDto.dtoToEntity());
+
+            PlanToWatch pwt = PlanToWatch.builder()
+                    .movieId(movieDto.getId())
+                    .profileId(profile.get().getId())
+                    .build();
+            return planToWatchRepository.save(pwt);
+        }
+        Optional<Watched> watched = watchedRepository.findByProfileIdAndMovieId(profileId, movieId);
+        if (watched.isPresent()) return null;
+
+        Optional<PlanToWatch> pwt = planToWatchRepository.findByProfileIdAndMovieId(profileId, movieId);
+        if (pwt.isEmpty()) {
+            PlanToWatch planToWatch = PlanToWatch.builder()
+                    .movieId(movie.get().getId())
+                    .profileId(profile.get().getId())
+                    .build();
+
+            return planToWatchRepository.save(planToWatch);
+        }
+
+        return null;
+
     }
 
+    public Watched addMovieToWatched(Long profileId, Long movieId) {
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        if (profile.isEmpty()) {
+            return null;
+        }
 
+        Optional<Movie> movie = movieRepository.findById(movieId);
+        if (movie.isEmpty()) {
+            MovieDto movieDto = theMovieDbIntegrationService.getMovieById(movieId);
+            movieRepository.save(movieDto.dtoToEntity());
+            Watched watched = Watched.builder()
+                    .profileId(profile.get().getId())
+                    .movieId(movieId)
+                    .build();
+            return watchedRepository.save(watched);
+        }
 
+        Optional<Watched> w = watchedRepository.findByProfileIdAndMovieId(profileId, movieId);
+        if (w.isEmpty()) {
+            ifPresentRemoveMovieFromPlanToWatch(profileId, movieId);
+
+            Watched watched = Watched.builder()
+                    .profileId(profile.get().getId())
+                    .movieId(movie.get().getId())
+                    .build();
+            return watchedRepository.save(watched);
+        }
+
+        return null;
+
+    }
+
+    public void ifPresentRemoveMovieFromPlanToWatch(Long profileId, Long movieId) {
+        Optional<PlanToWatch> pwt = planToWatchRepository.findByProfileIdAndMovieId(profileId, movieId);
+        if (pwt.isPresent()) {
+            planToWatchRepository.delete(pwt.get());
+        }
+    }
 }
