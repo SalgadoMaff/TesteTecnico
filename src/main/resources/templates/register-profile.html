@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1>Registrar Perfil</h1>
-<form th:action="@{'/account/' + ${accountId} + '/register-profile'}" method="post">
+<form th:action="@{'/profiles/register-profile'}" method="post">
     <label for="profileName">Nome do perfil:</label>
     <input type="text" id="profileName" name="profileName" />
     <button type="submit">Criar perfil</button>

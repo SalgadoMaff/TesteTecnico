@@ -4,19 +4,22 @@
     <title>Perfis</title>
 </head>
 <body>
+<p><a th:href="@{'/logout'}">Logout</a></p>
+
+
 <h1>Perfis</h1>
 <div th:if="${!account.getProfiles().isEmpty()}">
-    <!-- Mostrar a lista de perfis -->
     <ul>
-        <li th:each="profile : ${account.getProfiles()}" th:text="${profile.name}">
-            <!-- Link para entrar no perfil -->
-            <a th:href="@{'/account/' + ${account.getId()} + '/profile/' + ${profile.getId()}}">Enter</a>
+        <li th:each="profile : ${account.getProfiles()}" >
+            <a th:text="${profile.name}" th:href="@{'/profile/' + ${profile.getId()}}">[[${profile.name}]]</a>
+
         </li>
     </ul>
 </div>
 <div th:unless="${!account.getProfiles().isEmpty()}">
     <p>Não há perfis registrados.</p>
 </div>
-<a th:href="@{'/account/' + ${account.getId()} + '/register-profile'}">Registre novo perfil</a> <!-- Link para a página de registro de perfil -->
+<a th:if="${account.getProfiles().size()!=4}" th:href="@{'/profiles/register-profile'}">Registre novo perfil</a>
+
 </body>
 </html>
