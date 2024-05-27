@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Filmes</title>
+</head>
+<body>
+<h1>Filmes</h1>
+<p><a th:href="@{/profile/{profileId}/plan-to-watch(profileId=${profileId})}">Lista de Planejados para assistir</a></p>
+<p><a th:href="@{/profile/{profileId}/watched(profileId=${profileId})}">Lista de Assistidos</a></p>
+
+<form th:action="@{/profile/{profileId}/movies(profileId=${profileId}, query=${query})}" method="get">
+    <input  type="text" name="query" th:value="${query}" placeholder="Procure um filme...">
+    <button type="submit">Procurar</button>
+</form>
+<table>
+    <thead th:if="${page!=0}">
+    <tr>
+        <th>Titulo</th>
+        <th>Descrição</th>
+        <th>Add p/ assistir</th>
+        <th>Add assistidos</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="movie : ${movies}">
+        <td th:text="${movie.title}"></td>
+        <td th:text="${movie.overview}"></td>
+        <td>
+            <form th:action="@{/profile/{profileId}/plantowatch/{movieId}(profileId=${profileId}, movieId = ${movie.id})}" method="post">
+                <button type="submit">Add</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/profile/{profileId}/watched/{movieId}(profileId=${profileId}, movieId = ${movie.id})}" method="post">
+                <button type="submit">Add</button>
+            </form>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+<ul>
+    <li th:if="${page > 1}"><a th:href="@{/profile/{profileId}/movies(profileId=${profileId}, query=${query}, page=${page-1})}">Anterior</a></li>
+    <li th:if="${page < totalPages}">
+        <a th:href="@{/profile/{profileId}/movies(profileId=${profileId}, query=${query}, page=${page+1})}">Próximo</a>
+    </li>
+</ul>
