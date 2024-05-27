@@ -10,11 +10,11 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
-@Table(name="account")
+@Table(name = "account")
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of = "id")
 public class Account {
 
     @Id
@@ -27,7 +27,6 @@ public class Account {
     private String password;
 
     private String name;
-
 
     private Date birthDate;
 
