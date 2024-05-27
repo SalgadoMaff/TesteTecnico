@@ -2,6 +2,7 @@ package com.example.testetecnico.controller;
 
 import com.example.testetecnico.dto.MoviePageDto;
 import com.example.testetecnico.entities.Account;
+import com.example.testetecnico.entities.Profile;
 import com.example.testetecnico.integration.tmdb.TheMovieDbIntegrationService;
 import com.example.testetecnico.services.AccountService;
 import com.example.testetecnico.services.CustomUserDetails;
@@ -64,11 +65,24 @@ public class ProfileMovieController {
         }
     }
 
-    @PostMapping("/{profileId}/plantowatch/{movieId}")
+    @PostMapping("/{profileId}/plan_to_watch/{movieId}")
     public String handlePlanToWatchPost(@PathVariable Long profileId, @PathVariable Long movieId) {
         if (checkAuth(profileId, getAccount())) {
             profileService.addMovieToPlanToWatch(profileId, movieId);
             return "redirect:/profile/" + profileId.toString() + "/movies";
+        }
+        return "authError";
+    }
+
+    @GetMapping("/{profileId}/plan_to_watch")
+    public String getPlanToWatchList(Model model, @PathVariable Long profileId) {
+        if (checkAuth(profileId, getAccount())) {
+            Profile profile = profileService.getProfileWithPlanToWatchList(profileId);
+            if (profile == null) return "invalidProfile";
+
+            model.addAttribute("movies", profile.getPlanToWatch());
+            model.addAttribute("profileId", profileId);
+            return "plan_to_watch";
         }
         return "authError";
     }
@@ -78,6 +92,19 @@ public class ProfileMovieController {
         if (checkAuth(profileId, getAccount())) {
             profileService.addMovieToWatched(profileId, movieId);
             return "redirect:/profile/" + profileId.toString() + "/movies";
+        }
+        return "authError";
+    }
+
+    @GetMapping("/{profileId}/watched")
+    public String getWatchedList(Model model, @PathVariable Long profileId) {
+        if (checkAuth(profileId, getAccount())) {
+            Profile profile = profileService.getProfileWithWatchedList(profileId);
+            if (profile == null) return "invalidProfile";
+
+            model.addAttribute("movies", profile.getWatched());
+            model.addAttribute("profileId", profileId);
+            return "watched";
         }
         return "authError";
     }

@@ -10,6 +10,7 @@ import com.example.testetecnico.repositories.WatchedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -128,5 +129,41 @@ public class ProfileService {
         if (pwt.isPresent()) {
             planToWatchRepository.delete(pwt.get());
         }
+    }
+
+    public Profile getProfileWithWatchedList(Long profileId) {
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        if (profile.isEmpty()) {
+            return null;
+        }
+        Optional<List<Watched>> watched = watchedRepository.getAllById(profileId);
+        if (watched.get().size() == 0) return profile.get();
+        var w = watched.get().stream().toList();
+
+        for (int i = 0; i < w.size(); i++) {
+            Optional<Movie> movie = movieRepository.findById(w.get(i).getMovieId());
+            profile.get().getWatched().add(movie.get());
+        }
+
+        return profile.get();
+
+    }
+
+    public Profile getProfileWithPlanToWatchList(Long profileId) {
+        Optional<Profile> profile = profileRepository.findById(profileId);
+        if (profile.isEmpty()) {
+            return null;
+        }
+        Optional<List<PlanToWatch>> pwt = planToWatchRepository.getAllById(profileId);
+        if (pwt.get().size() == 0) return profile.get();
+        var p = pwt.get().stream().toList();
+
+        for (int i = 0; i < p.size(); i++) {
+
+            Optional<Movie> movie = movieRepository.findById(p.get(i).getMovieId());
+            profile.get().getWatched().add(movie.get());
+        }
+
+        return profile.get();
     }
 }
