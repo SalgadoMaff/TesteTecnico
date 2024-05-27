@@ -1,20 +1,32 @@
 package com.example.testetecnico.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name="movie")
-@Getter
-@Setter
+@Table(name = "movie")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Movie {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String overview;
 
+    @ManyToMany(mappedBy = "planToWatch")
+    private Set<Profile> profilesPlanToWatch = new HashSet<>();
 
-
+    @ManyToMany(mappedBy = "watched")
+    private Set<Profile> profilesWatched = new HashSet<>();
 }
